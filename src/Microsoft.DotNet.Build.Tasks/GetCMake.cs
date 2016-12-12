@@ -12,11 +12,13 @@ using System.Threading.Tasks;
 
 namespace Microsoft.DotNet.Build.Tasks
 {
-    public class GetCMake : Microsoft.DotNet.Build.Tasks.Task
+    public class GetCMake : Microsoft.Build.Utilities.Task
     {
         public string CMakeVersion { get; set; }
 
         public string CMakeBinaryFolder { get; set; }
+
+        public string Architecture { get; set; }
 
         [Output]
         public string CMakePath { get; set; }
@@ -33,6 +35,8 @@ namespace Microsoft.DotNet.Build.Tasks
                 CMakeVersion = "3.7";
             }
 
+            // TODO: If the specified version of CMake already exists then, return the path here.
+
             if (string.IsNullOrWhiteSpace(CMakeBinaryFolder))
             {
                 // Binary will be downloaded to CMake folder under temp directory.
@@ -46,8 +50,8 @@ namespace Microsoft.DotNet.Build.Tasks
             Directory.CreateDirectory(CMakeBinaryFolder);
 
             string compressedBinaryFilename = string.Format("cmake-{0}.1-", CMakeVersion);
-            compressedBinaryFilename += "win64-x64.zip";
 
+            // TODO: Take Architecture as a parameter from MSBuild.
             if (string.Equals(System.Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE"), "AMD64", StringComparison.OrdinalIgnoreCase))
             {
                 compressedBinaryFilename += "win64-x64.zip";
@@ -65,22 +69,26 @@ namespace Microsoft.DotNet.Build.Tasks
             {
                 Log.LogMessage(MessageImportance.Low, $"Attempting to extract {compressedBinaryPath} to {CMakeBinaryFolder}.");
                 ZipFile.ExtractToDirectory(compressedBinaryPath, CMakeBinaryFolder);
-                CMakePath = Path.Combine(CMakeBinaryFolder, Path.GetFileNameWithoutExtension(compressedBinaryPath), @"bin\cmake.exe");
 
+                CMakePath = Path.Combine(CMakeBinaryFolder, Path.GetFileNameWithoutExtension(compressedBinaryPath), @"bin\cmake.exe");
+            }
+
+            if (File.Exists(compressedBinaryPath))
+            {
                 File.Delete(compressedBinaryPath);
             }
 
             return !Log.HasLoggedErrors;
         }
 
-        private static async System.Threading.Tasks.Task<bool> DownloadCMake(string downloadUrl, string compressedBinaryPath)
+        private async System.Threading.Tasks.Task<bool> DownloadCMake(string downloadUrl, string compressedBinaryPath)
         {
             bool isDownloadSuccessful = true;
             try
             {
-                using (System.Net.weHttp.HttpClient httpClient = new HttpClient())
+                using (HttpClient httpClient = new HttpClient())
                 {
-                    using (System.Net.Http.HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, downloadUrl))
+                    using (HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, downloadUrl))
                     {
                         using (
                         Stream contentStream = await (await httpClient.SendAsync(request)).Content.ReadAsStreamAsync(),
