@@ -47,9 +47,9 @@ namespace Microsoft.DotNet.Build.Tasks.Feed
             }
         }
 
-        public async Task<bool> PushToFeed(bool allowOverwrite = false)
+        public async Task<bool> PushToFeed(IEnumerable<string> items, bool allowOverwrite = false)
         {
-            if (feed.IsSanityChecked(feed.PackagesPath))
+            if (feed.IsSanityChecked(items))
             {
                 if (CancellationToken.IsCancellationRequested)
                 {
