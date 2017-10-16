@@ -14,19 +14,21 @@
 
         PublishDependsOn can be customized at build time on the commandline to determine the pre steps required to publish 
     -->
+  <Target Name="PublishOutputLeg">
+    <Error Text="The AccountName property must be set on the command line."
+          Condition="'$(AccountName)' == ''" />
+    <Error Text="The AccountKey property must be set on the command line."
+          Condition="'$(AccountKey)' == ''" />
+    <Error Text="The ContainerName property must be set on the command line."
+          Condition="'$(ContainerName)' == ''" />
+    <Error Text="The PackagesPath property must be set on the command line."
+          Condition="'$(PackagesPath)' == ''" />
 
-    <Target Name="PublishOutputLeg" DependsOnTargets="@(PublishDependsOn)" >
-      <Error Text="The ExpectedFeedUrl  property must be set on the command line."  
-            Condition="'$(ExpectedFeedUrl)' == ''" />  
-      <Error Text="The AccountKey property must be set on the command line."  
-            Condition="'$(AccountKey)' == ''" />
-      
-      <Message Importance="High" Text="Publish to $(ContainerName) started" />
-      <PushToBlobFeed ExpectedFeedUrl="$(ExpectedFeedUrl)"
-                      AccountKey="$(AccountKey)"
-                      ItemsToPush="@(ItemsToPush)"
-                      IndexDirectory="$(IndexDirectory)"
-                      PublishFlatContainer="$(PublishFlatContainer)"
-                      Overwrite="$(Overwrite)" />
-    </Target>
+    <Message Importance="High" Text="Publish to $(ContainerName) started" />
+    <PushToBlobFeed AccountName="$(AccountName)"
+                    AccountKey="$(AccountKey)"
+                    ContainerName="$(ContainerName)"
+                    PackagesPath="$(PackagesPath)"
+                    Overwrite="$(Overwrite)" />
+  </Target>
 </Project>
