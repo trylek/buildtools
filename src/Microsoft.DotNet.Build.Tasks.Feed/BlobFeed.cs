@@ -21,7 +21,7 @@ namespace Microsoft.DotNet.Build.Tasks.Feed
 
         public string ContainerName { get; set; }
 
-        public string RelativePath { get; set; }
+        public string PackagesPath { get; set; }
 
 
         private static readonly CancellationTokenSource TokenSource = new CancellationTokenSource();
