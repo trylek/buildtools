@@ -1,16 +1,16 @@
 <Project ToolsVersion="12.0" DefaultTargets="PublishOutputLeg" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-<PropertyGroup>
-  <_TaskDir>$(MSBuildThisFileDirectory)net46/</_TaskDir>
-  <_TaskDir Condition="'$(MSBuildRuntimeType)' == 'Core'">$(MSBuildThisFileDirectory)netstandard1.5/</_TaskDir>
-</PropertyGroup>
-<UsingTask TaskName="PushToBlobFeed" AssemblyFile="$(_TaskDir)Microsoft.DotNet.Build.Tasks.Feed.dll"/>
-<UsingTask TaskName="ConfigureInputFeeds" AssemblyFile="$(_TaskDir)Microsoft.DotNet.Build.Tasks.Feed.dll"/>
+  <PropertyGroup>
+    <_TaskDir>$(MSBuildThisFileDirectory)net46/</_TaskDir>
+    <_TaskDir Condition="'$(MSBuildRuntimeType)' == 'Core'">$(MSBuildThisFileDirectory)netstandard1.5/</_TaskDir>
+  </PropertyGroup>
+  <UsingTask TaskName="PushToBlobFeed" AssemblyFile="$(_TaskDir)Microsoft.DotNet.Build.Tasks.Feed.dll"/>
+  <UsingTask TaskName="ConfigureInputFeeds" AssemblyFile="$(_TaskDir)Microsoft.DotNet.Build.Tasks.Feed.dll"/>
+  
+    <ItemGroup Condition="'$(ItemsToPushGlobPattern)' != ''">
+      <ItemsToPush Include="$(ItemsToPushGlobPattern)" />
+    </ItemGroup>
 
-<ItemGroup Condition="'$(ItemsToPushGlobPattern)' != ''">
-  <ItemsToPush Include="$(ItemsToPushGlobPattern)" />
-</ItemGroup>
-
-<!-- This is the standard publish target. It can be used to publish assets for the intermediate output of individual build legs and
+    <!-- This is the standard publish target. It can be used to publish assets for the intermediate output of individual build legs and
          the finalized output of an official build. 
          ExpectedFeedUrl - The url of the nuget feed you would like to generate (should contain the storage account, container and relative path) and end with index.json
          AccountKey - The access key from your Azure storage account 
