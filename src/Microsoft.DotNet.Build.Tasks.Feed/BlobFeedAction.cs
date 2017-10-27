@@ -27,8 +27,7 @@ namespace Microsoft.DotNet.Build.Tasks.Feed
 
         const string feedRegex = @"(?<feedurl>https:\/\/(?<accountname>[^\.-]+)(?<domain>[^\/]*)\/((?<token>[a-zA-Z0-9+\/]*?\/\d{4}-\d{2}-\d{2})\/)?(?<containername>[^\/]+)\/(?<relativepath>.*\/))index\.json";
 
-        public BlobFeedAction(string accountName, string accountKey, string containerName, string packagesPath, MSBuild.TaskLoggingHelper Log)
-        public BlobFeedAction(string expectedFeedUrl, string accountKey, ITaskItem[] itemstoPush, MSBuild.TaskLoggingHelper Log)
+        public BlobFeedAction(string expectedFeedUrl, string accountKey, MSBuild.TaskLoggingHelper Log)
         {
             this.Log = Log;
             Match m = Regex.Match(expectedFeedUrl, feedRegex);
@@ -108,7 +107,7 @@ namespace Microsoft.DotNet.Build.Tasks.Feed
                     catch (InvalidOperationException ex) when (ex.Message.Contains("init"))
                     {
                         Log.LogWarning($"Sub-feed {source.FeedSubPath} has not been initialized. Initializing now...");
-                        bool result = await InitCommand.RunAsync(settings, fileSystem, new SleetLogger(Log));
+                        bool result = await InitCommand.RunAsync(settings, fileSystem, false, true, new SleetLogger(Log), CancellationToken);
 
                         if (result)
                         {
