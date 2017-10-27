@@ -19,6 +19,7 @@ namespace Microsoft.DotNet.Build.Tasks.Feed
         [Required]
         public string AccountKey { get; set; }
 
+        [Required]
         public ITaskItem[] ItemsToPush { get; set; }
 
         public bool Overwrite { get; set; }
@@ -39,7 +40,7 @@ namespace Microsoft.DotNet.Build.Tasks.Feed
                 }
                 else
                 {
-                    BlobFeedAction blobFeedAction = new BlobFeedAction(ExpectedFeedUrl, AccountKey, ItemsToPush, Log);
+                    BlobFeedAction blobFeedAction = new BlobFeedAction(ExpectedFeedUrl, AccountKey, Log);
                     await blobFeedAction.PushToFeed(ConvertToStringLists(ItemsToPush), Overwrite);
                 }
             }
