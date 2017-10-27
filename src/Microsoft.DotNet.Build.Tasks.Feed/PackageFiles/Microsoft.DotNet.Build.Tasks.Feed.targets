@@ -24,32 +24,30 @@
         PublishDependsOn can be customized at build time on the commandline to determine the pre steps required to publish 
     -->
 
-    <Target Name="PublishOutputLeg" DependsOnTargets="@(PublishDependsOn)" >
-      <Error Text="The ExpectedFeedUrl  property must be set on the command line."  
-            Condition="'$(ExpectedFeedUrl)' == ''" />  
-      <Error Text="The AccountKey property must be set on the command line."  
-            Condition="'$(AccountKey)' == ''" />
-      
-      <Message Importance="High" Text="Publish to container started" />
-      <PushToBlobFeed ExpectedFeedUrl="$(ExpectedFeedUrl)"
-                      AccountKey="$(AccountKey)"
-                      ItemsToPush="@(ItemsToPush)"
-                      IndexDirectory="$(IndexDirectory)"
-                      PublishFlatContainer="$(PublishFlatContainer)"
-                      Overwrite="$(Overwrite)" />
-    </Target>
+<Target Name="PublishOutputLeg" DependsOnTargets="@(PublishDependsOn)" >
+  <Error Text="The ExpectedFeedUrl  property must be set on the command line."
+        Condition="'$(ExpectedFeedUrl)' == ''" />
+  <Error Text="The AccountKey property must be set on the command line."
+        Condition="'$(AccountKey)' == ''" />
 
-  <!-- This is the target used to configure feeds for restore. It can be used to specify the sources from which you would restore your packages from.
+  <Message Importance="High" Text="Publish to container started" />
+  <PushToBlobFeed ExpectedFeedUrl="$(ExpectedFeedUrl)"
+                  AccountKey="$(AccountKey)"
+                  ItemsToPush="@(ItemsToPush)"
+                  Overwrite="$(Overwrite)" />
+</Target>
+
+<!-- This is the target used to configure feeds for restore. It can be used to specify the sources from which you would restore your packages from.
        Parameters to specify:
        EnableFeeds - ItemGroup which contains sources which are allowed
       ConfigureInputDependsOn can be customized at build time on the commandline to determine the pre steps required
   -->
 
-  <Target Name="ConfigureInputFeeds" DependsOnTargets="@(ConfigureInputDependsOn)" >
-    <Error Text="The EnableFeeds ItemGroup must be set on the command line."  
-           Condition="'@(EnableFeeds)' == ''" />
+<Target Name="ConfigureInputFeeds" DependsOnTargets="@(ConfigureInputDependsOn)" >
+  <Error Text="The EnableFeeds ItemGroup must be set on the command line."
+         Condition="'@(EnableFeeds)' == ''" />
 
-    <Message Importance="High" Text="Configuring input feeds started" />
-    <ConfigureInputFeed EnableFeeds="@(EnableFeeds)" />
-  </Target>
+  <Message Importance="High" Text="Configuring input feeds started" />
+  <ConfigureInputFeed EnableFeeds="@(EnableFeeds)" />
+</Target>
 </Project>

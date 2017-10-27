@@ -19,7 +19,6 @@ namespace Microsoft.DotNet.Build.Tasks.Feed
         [Required]
         public string AccountKey { get; set; }
 
-        [Required]
         public ITaskItem[] ItemsToPush { get; set; }
 
         public bool Overwrite { get; set; }
